@@ -1,0 +1,22 @@
+# package description
+[package]
+name = "wako_log_viewer"
+version = "0.1.0"
+edition = "2024"
+description = "GUI viewer/filter/exporter for WAKO point-panel bout logs"
+
+# project dependencies
+[dependencies]
+eframe = "0.36"
+egui = "0.36"
+rfd = "0.17"
+chrono = "0.4"
+regex = "1"
+
+# release profile configurations
+[profile.release]
+opt-level = 2
+
+# build target configurations
+[target.x86_64-pc-windows-gnu]
+linker = "cargo-zigbuild"
