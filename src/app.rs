@@ -381,6 +381,21 @@ impl eframe::App for LogViewerApp {
             ui.add_space(4.0);
         });
 
+        //start of footer
+        egui::Panel::bottom("footer").show(ui, |ui| {
+            //adds some spacing from top
+            ui.add_space(4.0);
+            // container that floats elements inside it
+            ui.horizontal(|ui| {
+                ui.label(format!("copyright © 2026-{} Matas Noreika. All rights reserved.", chrono::Local::now().format("%Y")));
+                //effectivly just flips start location to right edge
+                ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui|{
+                    //adds label from the right edge
+                    ui.label(format!("(v{}) MAD DOG", env!("CARGO_PKG_VERSION")));
+                });
+            });
+        });
+
         egui::Panel::left("filters_panel")
             .resizable(true)
             .default_size(200.0)
