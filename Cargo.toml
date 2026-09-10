@@ -16,7 +16,11 @@ regex = "1"
 
 # release profile configurations
 [profile.release]
-opt-level = 2
+opt-level = 3            # Maximize performance for heavy egui math/rendering
+lto = "fat"              # Perform Link-Time Optimization across all crates
+codegen-units = 1        # Reduce parallel compilation blocks to maximize optimization
+panic = "abort"          # Remove panic unwinding (cuts out significant code bloat)
+strip = true             # Strip symbols and debug info automatically (huge size reduction)
 
 # The profile that 'dist' will build with
 [profile.dist]
