@@ -1,9 +1,10 @@
 # package description
 [package]
 name = "wako_log_viewer"
-version = "0.1.0"
+version = "1.0.1"
 edition = "2024"
 description = "GUI viewer/filter/exporter for WAKO point-panel bout logs"
+repository = "https://github.com/matas-noreika/wako-log-viewer"
 
 # project dependencies
 [dependencies]
@@ -16,6 +17,11 @@ regex = "1"
 # release profile configurations
 [profile.release]
 opt-level = 2
+
+# The profile that 'dist' will build with
+[profile.dist]
+inherits = "release"
+lto = "thin"
 
 # build target configurations
 [target.x86_64-pc-windows-gnu]

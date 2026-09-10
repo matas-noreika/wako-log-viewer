@@ -5,7 +5,7 @@ WAKO point-panel bout logs (the `point_panel_wakolc_log.*` files).
 
 ## Build & run
 
-Requires a recent stable Rust toolchain (install via https://rustup.rs if
+Requires a recent stable Rust toolchain (install via <https://rustup.rs> if
 you don't have one — `cargo --version` should be 1.75+, ideally current
 stable, since `eframe`/`egui` move fast).
 
@@ -19,6 +19,8 @@ On Linux you'll also need the usual GUI dev packages for `eframe`/`rfd`
 ```
 sudo apt install libgtk-3-dev libxkbcommon-dev libssl-dev
 ```
+
+On macOS you may use
 
 ## Using it
 
