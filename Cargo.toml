@@ -26,7 +26,6 @@ strip = true             # Strip symbols and debug info automatically (huge size
 # The profile that 'dist' will build with
 [profile.dist]
 inherits = "release"
-lto = "thin"
 
 # build target configurations
 [target.x86_64-pc-windows-gnu]
