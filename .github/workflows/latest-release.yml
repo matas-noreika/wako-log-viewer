@@ -1,0 +1,31 @@
+name: Update Latest Tag Symlink
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: write
+
+jobs:
+  update-tag:
+    # Only run this if it was a real, versioned release (e.g., v1.0.0), 
+    # and not an execution triggered by the 'latest' release itself.
+    if: github.event.release.tag_name != 'latest' && !github.event.release.prerelease
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Move and Force-Push Latest Tag
+        run: |
+          # Fetch the exact tag that triggered this release event
+          git fetch origin refs/tags/${{ github.event.release.tag_name }}
+          
+          # Force point the 'latest' tag to that specific release commit
+          git tag -f latest ${{ github.event.release.tag_name }}
+          
+          # Push the update upstream
+          git push origin refs/tags/latest --force

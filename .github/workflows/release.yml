@@ -277,18 +277,6 @@ jobs:
           echo "$ANNOUNCEMENT_BODY" > $RUNNER_TEMP/notes.txt
 
           gh release create "${{ needs.plan.outputs.tag }}" --target "$RELEASE_COMMIT" $PRERELEASE_FLAG --title "$ANNOUNCEMENT_TITLE" --notes-file "$RUNNER_TEMP/notes.txt" artifacts/*
-      - name: Update Floating Latest Link
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          git tag -f latest
-          git push origin refs/tags/latest --force
-          gh release delete latest --yes || true
- 
-          gh release create latest \
-            --title "Latest Stable Release" \
-            --notes "Looking for the latest binaries? Click here to download them from the official stable release: [${{ github.ref_name }} Release](https://github.com{{ github.repository }}/releases/tag/${{ github.ref_name }})." \
-            --target main
 
   announce:
     needs:
