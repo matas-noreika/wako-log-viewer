@@ -1,7 +1,7 @@
 # package description
 [package]
 name = "wako_log_viewer"
-version = "1.1.5"
+version = "1.1.6"
 edition = "2024"
 description = "GUI viewer/filter/exporter for WAKO point-panel bout logs"
 repository = "https://github.com/matas-noreika/wako-log-viewer"
