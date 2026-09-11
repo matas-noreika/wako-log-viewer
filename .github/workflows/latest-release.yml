@@ -7,43 +7,38 @@ on:
       - completed
 
 permissions:
-  contents: write # Required to push git tags & update release metadata via API
+  contents: write # Required to push git tags & mark releases as latest via gh/API
 
 jobs:
   update-tag:
     runs-on: ubuntu-latest
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
-    
+
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: Move and Force-Push Latest Tag
+      - name: Move latest tag and mark the real release as "latest"
         run: |
           TARGET_TAG="${{ github.event.workflow_run.head_branch }}"
           echo "Target tag to symlink: $TARGET_TAG"
-          
+
           # Fetch target tag commit
-          git fetch origin refs/tags/$TARGET_TAG:refs/tags/$TARGET_TAG
-          
+          git fetch origin "refs/tags/${TARGET_TAG}:refs/tags/${TARGET_TAG}"
+
           # Force point the 'latest' tag to that specific commit
-          git tag -f latest $TARGET_TAG
-          
+          git tag -f latest "$TARGET_TAG"
+
           # Push the updated 'latest' tag upstream
           git push origin refs/tags/latest --force
 
-      - name: Set Release UI Symlink via GitHub API
-        run: |
-          TARGET_TAG="${{ github.event.workflow_run.head_branch }}"
-          
-          # Use GitHub API to explicitly force the 'latest' tag to register as the latest release metadata
-          curl -L \
-            -X POST \
-            -H "Accept: application/vnd.github+json" \
-            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
-            -H "X-GitHub-Api-Version: 2022-11-28" \
-            https://github.com{{ github.repository }}/releases \
-            -d "{\"tag_name\":\"latest\", \"name\":\"Latest Release\", \"body\":\"This is a rolling tag pointing to the latest stable release ($TARGET_TAG).\", \"make_latest\":\"true\"}"
-
+          # Mark the release cargo-dist already created for $TARGET_TAG as
+          # GitHub's "latest" release, instead of creating a second, empty
+          # release under a "latest" tag. This is what makes
+          # .../releases/latest and .../releases/latest/download/<asset>
+          # resolve to this release's actual uploaded binaries.
+          gh release edit "$TARGET_TAG" --latest
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
