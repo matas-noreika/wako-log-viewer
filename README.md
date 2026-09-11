@@ -20,8 +20,6 @@ On Linux you'll also need the usual GUI dev packages for `eframe`/`rfd`
 sudo apt install libgtk-3-dev libxkbcommon-dev libssl-dev
 ```
 
-On macOS you may use
-
 ## Using it
 
 1. **Open log file…** — pick your `.log` / `.txt` / `.1` log file.
