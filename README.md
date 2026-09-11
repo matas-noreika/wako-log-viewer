@@ -58,3 +58,4 @@ the parser attaches to the preceding match automatically.
 ## Next Steps
 
 - [ ] Implement export using current selected filter options
+- [ ] Implement a changelog viewer button in the GUI
