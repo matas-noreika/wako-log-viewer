@@ -1,17 +1,16 @@
 name: Update Latest Tag Symlink
 
 on:
-  release:
-    types: [published]
+  workflow_run:
+    workflows: [release]
+    types:
+      - completed
 
 permissions:
   contents: write
 
 jobs:
   update-tag:
-    # Only run this if it was a real, versioned release (e.g., v1.0.0), 
-    # and not an execution triggered by the 'latest' release itself.
-    if: github.event.release.tag_name != 'latest' && !github.event.release.prerelease
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
