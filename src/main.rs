@@ -4,6 +4,7 @@
 mod app;
 mod model;
 mod parser;
+mod exports;
 
 use app::LogViewerApp;
 

@@ -1,7 +1,7 @@
 # package description
 [package]
 name = "wako_log_viewer"
-version = "1.0.2"
+version = "1.1.0"
 edition = "2024"
 description = "GUI viewer/filter/exporter for WAKO point-panel bout logs"
 repository = "https://github.com/matas-noreika/wako-log-viewer"
@@ -13,6 +13,7 @@ egui = "0.36"
 rfd = "0.17"
 chrono = "0.4"
 regex = "1"
+markdown2pdf = "1.6.0"
 
 # release profile configurations
 [profile.release]

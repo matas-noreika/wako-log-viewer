@@ -166,40 +166,6 @@ impl LogViewerApp {
         self.filtered_count = count;
     }
 
-    fn export_text_for(&self, matchid: &str) -> String {
-        let Some(parsed) = &self.parsed else {
-            return String::new();
-        };
-        let mut out = String::new();
-        if let Some(summary) = parsed.find_match(matchid) {
-            out.push_str(&format!("MATCHID: {}\n", summary.matchid));
-            if let Some(r) = &summary.ring {
-                out.push_str(&format!("Ring: {r}\n"));
-            }
-            if let Some(b) = &summary.bout_label {
-                out.push_str(&format!("Bout: {b}\n"));
-            }
-            if let Some(rn) = &summary.round_name {
-                out.push_str(&format!("Round: {rn}\n"));
-            }
-            if let Some(red) = &summary.red_name {
-                out.push_str(&format!("RED:  {red}\n"));
-            }
-            if let Some(blue) = &summary.blue_name {
-                out.push_str(&format!("BLUE: {blue}\n"));
-            }
-            out.push_str(&"-".repeat(60));
-            out.push('\n');
-        }
-        for entry in &parsed.entries {
-            if entry.matchid.as_deref() == Some(matchid) {
-                out.push_str(&entry.raw);
-                out.push('\n');
-            }
-        }
-        out
-    }
-
     fn draw_filter_panel(&mut self, ui: &mut egui::Ui) {
         ui.heading("Filters");
         ui.add_space(4.0);
@@ -323,15 +289,15 @@ impl LogViewerApp {
                 .add_enabled(enabled, egui::Button::new("Copy to clipboard"))
                 .clicked()
             {
-                if let Some(mid) = self.export_matchid.clone() {
-                    let text = self.export_text_for(&mid);
+                if let (Some(parsed), Some(mid)) = (&self.parsed, self.export_matchid.clone()) {
+                    let text = crate::exports::plain_text_for(parsed, &mid);
                     ui.ctx().copy_text(text);
                     self.last_export_note = Some("Match text copied to clipboard.".to_string());
                 }
             }
             if ui.add_enabled(enabled, egui::Button::new("Save as .txt…")).clicked() {
-                if let Some(mid) = self.export_matchid.clone() {
-                    let text = self.export_text_for(&mid);
+                if let (Some(parsed), Some(mid)) = (&self.parsed, self.export_matchid.clone()) {
+                    let text = crate::exports::plain_text_for(parsed, &mid);
                     let default_name = format!("match_{}.txt", crate::model::short_id(&mid));
                     if let Some(path) = rfd::FileDialog::new()
                         .set_file_name(&default_name)
@@ -345,6 +311,32 @@ impl LogViewerApp {
                             }
                             Err(e) => {
                                 self.last_export_note = Some(format!("Failed to save: {e}"));
+                            }
+                        }
+                    }
+                }
+            }
+        });
+        ui.horizontal(|ui| {
+            let enabled = self.export_matchid.is_some();
+            if ui
+                .add_enabled(enabled, egui::Button::new("Export referee PDF…"))
+                .clicked()
+            {
+                if let (Some(parsed), Some(mid)) = (&self.parsed, self.export_matchid.clone()) {
+                    let default_name = crate::exports::pdf_file_name(&mid);
+                    if let Some(path) = rfd::FileDialog::new()
+                        .set_file_name(&default_name)
+                        .add_filter("PDF file", &["pdf"])
+                        .save_file()
+                    {
+                        match crate::exports::render_pdf_for(parsed, &mid, &path) {
+                            Ok(()) => {
+                                self.last_export_note =
+                                    Some(format!("Saved PDF to {}", path.display()));
+                            }
+                            Err(e) => {
+                                self.last_export_note = Some(format!("Failed to render PDF: {e}"));
                             }
                         }
                     }
