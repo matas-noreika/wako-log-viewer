@@ -54,3 +54,7 @@ line is `<timestamp> [INFO] [MATCHID <id>] [EVENT <code>] <message>`;
 `Match-Info:` / `Match:` lines carry bout metadata; `Scoretable` blocks
 are a few un-tagged continuation rows (`R1 | ... | TOTAL | ...`) that
 the parser attaches to the preceding match automatically.
+
+## Next Steps
+
+- [ ] Implement export using current selected filter options
